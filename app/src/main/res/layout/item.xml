@@ -9,6 +9,14 @@
         android:background="#fff"
     >
 
+<androidx.cardview.widget.CardView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:ignore="MissingConstraints"
+    android:elevation="8dp"
+    app:cardBackgroundColor="#352424"
+    app:cardCornerRadius="4dp"
+    >
 
     <TextView
         android:id="@+id/personNameText"
@@ -16,20 +24,22 @@
         android:layout_height="wrap_content"
         android:textSize="22dp"
         android:text="Person name"
+        android:textStyle="bold"
+        android:padding="7dp"
+        android:outlineSpotShadowColor="@color/design_default_color_error"
+        android:layout_marginLeft="20dp"
+        android:textColor="#FFFF"
 
-        android:textColor="#000000"
-        android:background="#ffffff"
         tools:ignore="MissingConstraints" />
 
+</androidx.cardview.widget.CardView>
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewNew"
         android:layout_width="405dp"
         android:layout_height="254dp"
-        android:layout_below="@+id/personNameText"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/personNameText"
         app:layout_constraintVertical_bias="1.0"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="0dp">
@@ -39,5 +49,3 @@
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-

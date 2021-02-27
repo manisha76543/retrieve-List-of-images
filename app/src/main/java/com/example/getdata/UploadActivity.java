@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.view.View;
 import android.view.WindowManager;
@@ -45,33 +46,25 @@ public class UploadActivity extends AppCompatActivity {
     private Spinner spinner;
     public int i=1;
     private static final int pic_id=123;
-   int num1 = 2;
-   //int num1;
+    int num1 = 2;
+
     private ImageView imageView;
     private ProgressBar progressBar;
-  //  int num=2;
-    FloatingActionButton plusBtn;
+
+    ImageView plusBtn;
     private CardView card1Upload;
 
     private Bitmap img;
     private EditText mEditText;
 
-   // ArrayList<Uri> ImageList = new ArrayList<Uri>();
     private ArrayList<String> imageAdd= new ArrayList<>();
-    private Uri imageUri;
-  //  int k=4;
-
-    private ArrayList<String> arrayList = new ArrayList<>();
+   // private Uri imageUri;
 
     private ArrayList<String> trackId = new ArrayList<>();
-  //  private ArrayList<String> trackImg = new ArrayList<>();
-    String NAME;
 
-    private FirebaseDatabase db = FirebaseDatabase.getInstance();
+    String NAME;
     private DatabaseReference root = FirebaseDatabase.getInstance().getReference("known_images");
     private StorageReference reference = FirebaseStorage.getInstance().getReference("known_images");
-
-
 
 
     @Override
@@ -87,10 +80,8 @@ public class UploadActivity extends AppCompatActivity {
         plusBtn = findViewById(R.id.btnplus);
         card1Upload = (CardView) findViewById(R.id.cardViewUpload);
 
-
         root = FirebaseDatabase.getInstance().getReference();
         loadData();
-
 
         plusBtn.setOnClickListener(new View.OnClickListener() {
 
@@ -114,38 +105,26 @@ public class UploadActivity extends AppCompatActivity {
                 switch (position)
                 {
                     case 0:
+                       // upload(spinner.getItemAtPosition(position).toString());
                         break;
                     case 1:
                         upload(spinner.getItemAtPosition(position).toString());
-                        break;
-                    case 2:
-                        upload(spinner.getItemAtPosition(position).toString());
-                        break;
-                    case 3:
-                        upload(spinner.getItemAtPosition(position).toString());
-                        break;
-                    case 4:
-                        upload(spinner.getItemAtPosition(position).toString());
-                        break;
+                       break;
+
                     default:
                         upload(spinner.getItemAtPosition(position).toString());
                         break;
 
 
                 }
-                // Toast.makeText(MainActivity.this, "Person name : " + spinner.getItemAtPosition(position) , Toast.LENGTH_LONG).show();
-
 
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
-                Toast.makeText(UploadActivity.this, "Please select person ", Toast.LENGTH_LONG).show();
-
+               // Toast.makeText(UploadActivity.this, "Please select person ", Toast.LENGTH_LONG).show();
             }
         });
-
 
 
         imageView.setOnClickListener(new View.OnClickListener() {
@@ -155,7 +134,6 @@ public class UploadActivity extends AppCompatActivity {
                // num1++;
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(intent, 0);
-                ++num1;
 
             }
         });
@@ -163,24 +141,14 @@ public class UploadActivity extends AppCompatActivity {
         card1Upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-               // num1++;
                 root = FirebaseDatabase.getInstance().getReference("known_images/");
                 upload();
-                //num1++;
 
             }
 
         });
 
-
-
-
-
     }
-
-
-
 
 
     private void upload() {
@@ -276,7 +244,6 @@ public class UploadActivity extends AppCompatActivity {
 
     private void upload(String selectedFolder) {
 
-
         if (img != null) {
             progressBar.setVisibility(View.VISIBLE);
 
@@ -303,24 +270,16 @@ public class UploadActivity extends AppCompatActivity {
                                     String download_url = uri.toString();
 
                                     imageAdd.add(download_url);
-
                                     NAME = selectedFolder;
 
-                                   // Upload upload = new Upload(downloadUri.toString());
                                     Upload upload = new Upload(download_url);
 
-                                    //k++;
-                                    //  String uploadId = root.child("Person1").push().getKey();
-
-                                    String uploadId = "Person" + i;
-
-
-                                    root.child("known_images").child(NAME).child("image" + ++num1).setValue(upload.getImage1());
+                                    root.child("known_images").child(NAME).child("image" + num1++).setValue(upload.getImage1());
                                    // num1++;
-                                    // root.child("known_images").child(NAME).setValue(upload).getResult();
+
+                                    // root.child("known_images").child(NAME).setValue(upload.getImage1()).getResult();
                                     // String key = root.child(NAME).getKey();
                                     //DatabaseReference key2 = root.child(NAME).getParent();
-
 
                                 }
                             });
@@ -337,7 +296,10 @@ public class UploadActivity extends AppCompatActivity {
                             Toast.makeText(UploadActivity.this, "Upload Failed", Toast.LENGTH_SHORT).show();
                         }
                     });
-            //img  = null;
+            img  = null;
+            imageView.setImageBitmap(img);
+           // imageView.setImageResource(findViewById(R.id.imageView));
+            imageView.setImageResource(R.drawable.ic_baseline_add_a_photo_24);
 
 
         }
@@ -346,7 +308,6 @@ public class UploadActivity extends AppCompatActivity {
             Toast.makeText(UploadActivity.this, "Image is not found",Toast.LENGTH_LONG).show();
         }
     }
-
 
 
     public void loadData () {
@@ -388,13 +349,6 @@ public class UploadActivity extends AppCompatActivity {
             imageView.setImageBitmap(img);
            // imageUri = data.getData();
 
-
-
-
         }
-
     }
-
-
-
 }
