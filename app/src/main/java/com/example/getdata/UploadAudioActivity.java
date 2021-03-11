@@ -143,7 +143,6 @@ public class UploadAudioActivity extends AppCompatActivity {
             }
         });
 
-
     }
 
     public void recordAudio()
@@ -163,7 +162,8 @@ public class UploadAudioActivity extends AppCompatActivity {
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
       //  mediaRecorder.setOutputFile(AudiofilePath + recordFile);
         mediaRecorder.setOutputFile(AudiofilePath);
-        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+      //  mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
 
         try {
 

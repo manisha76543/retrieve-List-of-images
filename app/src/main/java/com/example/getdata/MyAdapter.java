@@ -54,8 +54,10 @@ public class MyAdapter extends RecyclerView.Adapter <MyAdapter.MyViewHolder1> {
         TextView personName;
         public RecyclerView PersonRecycle;
         public RecyclerView.LayoutManager manager;
+
         public MyViewHolder1(@NonNull View itemView) {
             super(itemView);
+
             personName = itemView.findViewById(R.id.personNameText);
             manager = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL,false);
             PersonRecycle = itemView.findViewById(R.id.recyclerViewNew);

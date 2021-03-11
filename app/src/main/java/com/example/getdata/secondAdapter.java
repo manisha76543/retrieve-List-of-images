@@ -78,6 +78,7 @@ public class secondAdapter extends RecyclerView.Adapter<secondAdapter.MyViewHold
 
         TextView text_add;
         ImageView imageView,imageView2;
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
              imageView = itemView.findViewById(R.id.m_image);
