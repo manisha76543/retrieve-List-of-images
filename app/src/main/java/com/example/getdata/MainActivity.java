@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     NotificationService localService;
     private boolean isBound = false;
 
-
+    String s;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,24 +69,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         reference = database.getInstance().getReference().child("ABC");
-
-        /*
-
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                if(snapshot.exists())
-//                {
-//                    int id = (int) snapshot.getChildrenCount();
-//
-//                }
-                String s = snapshot.getValue().toString();
-
-                if(s!=null)
-                {
-                    notification(s);
-                  //  ContextCompat.startForegroundService(this,notification(s));
-                }
+                 s = snapshot.getValue().toString();
 
             }
 
@@ -96,54 +82,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        reference.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-               // notification(snapshot.getValue().toString());
-
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-*/
 
 
-        Intent i = new Intent(this,NotificationService.class);
-        startService(i);
+      //  Intent i = new Intent(this,NotificationService.class);
+        //startService(i);
+        startService(new Intent(this,NotificationService.class));
 
-        if(i != null) {
-//            startActivity(i);
-        //    startActivityForResult(i, 0);
+        Intent i = new Intent(this,NotificationReceiver.class);
+        i.setAction(" com.example.getdata");
+      //  if(!s.equals("") || s.length()!=0)
+        {
+            sendBroadcast(i);
         }
 
-        Log.d("Tag main i = ", i.toString());
+        Log.d("Rec in main", "Rec in main");
 
-        stopService(i);
+       // bindService(new Intent(this,NotificationService.class),connection,Context.BIND_AUTO_CREATE);
+        //unbindService(connection);
 
-     //   bindService(i,connection,Context.BIND_AUTO_CREATE);
-      //  unbindService(connection);
-
-
+        stopService(new Intent(this,NotificationService.class));
 
 
         uploadCard = (CardView) findViewById(R.id.Upload_card);

@@ -8,15 +8,20 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.media.AudioAttributes;
+import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -32,6 +37,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.ref.WeakReference;
 import java.nio.channels.Channel;
 import java.util.List;
 
@@ -43,6 +49,28 @@ public class NotificationService extends Service {
     Context context;
     public Handler handler = null;
     public static Runnable runnable = null;
+
+/*
+    private static class MyAsyncTask  extends AsyncTask{
+
+        WeakReference<NotificationService> notificationServiceWeakReference;
+
+        public MyAsyncTask(NotificationService notificationService)
+        {
+            this.notificationServiceWeakReference = new WeakReference<>(notificationService);
+        }
+
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            super.onPostExecute(o);
+        }
+    }
+*/
 
     @Override
     public void onCreate() {
@@ -68,90 +96,117 @@ public class NotificationService extends Service {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
+                int channelId= 123;
+                String channelId_string = "123";
+                int NOTIFICATION_ID = 1000;
                 String s = snapshot.getValue().toString();
+                NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-                if(!s.equals("") || s.length()!=0) {
+
+               // if(!s.equals("") || s.length()!=0)
+                {
                     System.out.println("String = " + s);
 
-/*
-                    NotificationCompat.Builder notif = new NotificationCompat.Builder(context,"n");
-                    Notification notification = notif.setOngoing(true)
-                            .setSmallIcon(R.drawable.ic_baseline_notifications_active_24)
-                           .setContentTitle("hello")
-                            .setCategory(NotificationCompat.CATEGORY_SERVICE)
-                            .setContentText("what is text ")
-                           .build();
+//                    NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "n")
+//                            .setSmallIcon(R.drawable.ic_baseline_notifications_active_24)
+//                            .setContentTitle("My notification")
+//                            .setContentText("Much longer text that cannot fit one line...")
+//                            .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+//
+//                    NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+//                        notificationManager.notify(1234,builder.build());
+//
+//                   startForeground(1,builder.build());
 
 
-//                    NotificationManager mNotificationManager =
-//                            (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-//                   mNotificationManager.notify(1, notification.build());
-
-                    NotificationManagerCompat managerCompat = NotificationManagerCompat.from(context);
-                    managerCompat.notify(999,notif.build());
-
-                    startForeground(1, notification);*/
+        // adding action to left button
 
 
-                  //  createNotificationChannel();
-
-                    /*
-                    Notification notification = new NotificationCompat.Builder(context, "NOTIFICATION_CHANNEL")
-                            .setSmallIcon(R.drawable.ic_baseline_notifications_active_24)
-                            .setContentTitle("Title")
-                            .setContentText("Content").build();
-
-                    startForeground(1001, notification);*/
+        Intent leftIntent = new Intent(getApplicationContext(), goActivity.class);
+        leftIntent.setAction("DECLINE");
+      //  Intent rightIntent = new Intent(this, NotificationIntentService.class);
+        Intent rightIntent = new Intent(getApplicationContext(), goActivity.class);
+        rightIntent.setAction("ANSWER");
+        Intent button_intent = new Intent("Button clicked");
+        PendingIntent p_button_intent = PendingIntent.getService(getApplicationContext(),123,button_intent,0);
 
 
-                    NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "n")
-                            .setSmallIcon(R.drawable.ic_baseline_notifications_active_24)
-                            .setContentTitle("My notification")
-                            .setContentText("Much longer text that cannot fit one line...")
-                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                            .setChannelId("n");
+        RemoteViews collapsedView = new RemoteViews(getPackageName(), R.layout.custom_call_notification);
+        collapsedView.setTextViewText(R.id.name, DateUtils.formatDateTime(getApplicationContext(), System.currentTimeMillis(), DateUtils.FORMAT_SHOW_TIME));
+        collapsedView.setTextViewText(R.id.callType, s);
 
-                    NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-                  //  NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+       // collapsedView.setOnClickPendingIntent(R.id.btnAnswer, PendingIntent.getService(getApplicationContext(), 1, rightIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+     // collapsedView.setOnClickPendingIntent(R.id.btnDecline, PendingIntent.getService(this, 1, leftIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+        //collapsedView.setOnClickPendingIntent(R.id.btnDecline,p_button_intent);
+
+        Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+     //   ringtone = RingtoneManager.getRingtone(getApplicationContext(),uri);
+       // ringtone.play();
+                    MediaPlayer mp = MediaPlayer. create (getApplicationContext(), uri);
+                    mp.start();
+
+          // Intent activityIntent = new Intent(getApplicationContext(),MainActivity.class);
+         //  PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(),0,activityIntent,0);
+            //PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(),0,new Intent(getApplicationContext(),NotificationReceiver.class),0);
+
+                        Intent broadCastIntent = new Intent(getApplicationContext(), NotificationReceiver.class);
+                        broadCastIntent.putExtra("toastMessage", s);
+                        broadCastIntent.putExtra("audio_uri", uri);
+                        broadCastIntent.putExtra("id", NOTIFICATION_ID);
+
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, broadCastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+       NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(),"n")
+                .setSmallIcon(R.drawable.ic_baseline_notifications_active_24)
+                .setContentTitle("title")
+                .setContentText(s)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setAutoCancel(true)
+               .setPriority(Notification.PRIORITY_DEFAULT)
+
+              // .setOnlyAlertOnce(true)
+               //.setColor(Color.RED)
+               //.addAction(R.id.btnDecline,"Decline",p_button_intent)
+               //.setColor(Color.GREEN)
+               //.addAction(R.id.btnAnswer,"Answer",pendingIntent)
+               //.setSound(uri)
+
+               .setChannelId("n")
+               .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setContentIntent(PendingIntent.getActivity(getApplicationContext(), 0, new Intent(getApplicationContext(), NotificationReceiver.class), 0))
+                .setCustomContentView(collapsedView)
+        .setStyle(new NotificationCompat.DecoratedCustomViewStyle());
+
+        builder.build().flags|=Notification.FLAG_AUTO_CANCEL;
+
+                    collapsedView.setOnClickPendingIntent(R.id.btnDecline,pendingIntent);
+                    collapsedView.setOnClickPendingIntent(R.id.btnAnswer,pendingIntent);
+
+       // NotificationManager notificationManager = (android.app.NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+
+                    if(!s.equals("") || s.length()!=0)
                     {
-                        String channelId = "channel";
-                        NotificationChannel ChannelN = new NotificationChannel(channelId, "title",NotificationManager.IMPORTANCE_HIGH);
-                        notificationManager.createNotificationChannel(ChannelN);
-                        builder.setChannelId(channelId);
+                        startForeground(NOTIFICATION_ID,builder.build());
+                       // builder.setSound(uri);
+                       // builder.build().flags|=Notification.FLAG_AUTO_CANCEL;
+                       // notificationManager.notify(1,builder.build());
+       //                 ringtone.play();
+                    }
+                    else
+                    {
+                       // notificationManager.cancel(Integer.parseInt(channelId));
+                       // notificationManager.cancel(NOTIFICATION_ID);
+                        notificationManager.cancelAll();
+
                     }
 
-
-                   notificationManager.notify(0, builder.build());
-
-                   startForeground(1,builder.build());
-
-                 //  Boolean isServiceRunning = isServiceRunning(context,NotificationService.class);
-
-
-                  //  Log.d("Tag last ", "TAG LAST");
+                   //  notificationManager.notify(0, builder.build());
+                   // startForeground(1,builder.build());
 
                 }
-
-            }
-
-            private Boolean isServiceRunning(Context applicationContext, Class<NotificationService> notificationServiceClass) {
-
-
-                final ActivityManager activityManager = (ActivityManager) applicationContext.getSystemService(Context.ACTIVITY_SERVICE);
-                final List<ActivityManager.RunningServiceInfo> services = activityManager.getRunningServices(Integer.MAX_VALUE);
-
-                for(ActivityManager.RunningServiceInfo runningServiceInfo : services)
-                {
-                    Log.d("Tag new",String.format("Service:%s", runningServiceInfo.service.getClassName()));
-                    if(runningServiceInfo.service.getClassName().equals(notificationServiceClass.getName()))
-                    {
-                        return true;
-                    }
-                }
-                return false;
-
 
             }
 
@@ -159,29 +214,12 @@ public class NotificationService extends Service {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-            public void createNotificationChannel() {
-                // Create the NotificationChannel, but only on API 26+ because
-                // the NotificationChannel class is new and not in the support library
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-                    CharSequence name = "Channel name";
-                    String description = "Description";
-                    int importance = NotificationManager.IMPORTANCE_DEFAULT;
-                    NotificationChannel channel = new NotificationChannel("NOTIFICATION_CHANNEL", name, importance);
-                    channel.setDescription(description);
-                    NotificationManager notificationManager = getApplicationContext().getSystemService(NotificationManager.class);
-                    notificationManager.createNotificationChannel(channel);
-                }
-            }
-
         });
-
-
 
     }
 
 
-
+/*
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         //return super.onStartCommand(intent, flags, startId);
@@ -195,7 +233,7 @@ public class NotificationService extends Service {
 
     }
 
-
+*/
     private final IBinder binder = new LocalBinder();
 
     public class LocalBinder extends Binder
@@ -206,70 +244,6 @@ public class NotificationService extends Service {
         }
     }
 
-
-/*
-    private Notification showNotification(Context context, String message) {
-
-        // adding action to left button
-        Intent leftIntent = new Intent(context, goActivity.class);
-        leftIntent.setAction("DECLINE");
-        // leftIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
-        // adding action to right button
-        //  Intent rightIntent = new Intent(context, NotificationService.class);
-        Intent rightIntent = new Intent(context, goActivity.class);
-        rightIntent.setAction("ANSWER");
-
-
-        Intent button_intent = new Intent("Button clicked");
-
-        PendingIntent p_button_intent = PendingIntent.getService(context,123,button_intent,0);
-
-
-     //   RemoteViews collapsedView = new RemoteViews(context.getPackageName(), R.layout.custom_call_notification);
-       // collapsedView.setTextViewText(R.id.name, DateUtils.formatDateTime(context, System.currentTimeMillis(), DateUtils.FORMAT_SHOW_TIME));
-        //collapsedView.setTextViewText(R.id.callType, message);
-
-
-        //collapsedView.setOnClickPendingIntent(R.id.btnAnswer, PendingIntent.getService(context, 1, rightIntent, PendingIntent.FLAG_UPDATE_CURRENT));
-        // collapsedView.setOnClickPendingIntent(R.id.btnDecline, PendingIntent.getService(this, 1, leftIntent, PendingIntent.FLAG_UPDATE_CURRENT));
-
-        //collapsedView.setOnClickPendingIntent(R.id.btnDecline,p_button_intent);
-
-        Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-        ringtone = RingtoneManager.getRingtone(context,uri);
-        // ringtone.play();
-
-
-
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
-                new Intent(context, goActivity.class), 0);
-
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(context,"n")
-                        .setSmallIcon(R.drawable.ic_baseline_notifications_active_24)
-                        .setContentTitle("My notification")
-                    //    .setCustomContentView(collapsedView)
-                        .setFullScreenIntent(contentIntent,true)
-                        .setCategory(NotificationCompat.CATEGORY_CALL)
-                        .setContentText(message)
-                        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                        .setOngoing(true)
-                ;
-
-        mBuilder.setContentIntent(contentIntent);
-        mBuilder.setDefaults(Notification.DEFAULT_SOUND);
-        mBuilder.setAutoCancel(true);
-        NotificationManager mNotificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(1, mBuilder.build());
-
-
-        return mBuilder.build();
-
-    }
-*/
-
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -278,8 +252,8 @@ public class NotificationService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
-       // return binder;
+       // return null;
+        return binder;
 
     }
 
