@@ -151,14 +151,14 @@ public class ViewHolderAudio extends RecyclerView.Adapter <ViewHolderAudio.MyVie
                 startTime = dialogView.findViewById(R.id.startTime);
                 playFileName = dialogView.findViewById(R.id.player_fileName);
 
-//                builder.setView(playFileName);
-//                builder.setView(totalTimeOfAudio);
-//                builder.setView(startTime);
-//                builder.setView(pause1);
-//                builder.setView(back);
-//                builder.setView(forw);
-//                builder.setView(input);
-//                builder.setView(seekBar1);
+                builder.setView(playFileName);
+                builder.setView(totalTimeOfAudio);
+                builder.setView(startTime);
+                builder.setView(pause1);
+                builder.setView(back);
+                builder.setView(forw);
+                builder.setView(input);
+                builder.setView(seekBar1);
 
                 builder.setView(dialogView);
                 builder.show();

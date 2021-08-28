@@ -41,7 +41,7 @@ public class MyAdapter extends RecyclerView.Adapter <MyAdapter.MyViewHolder1> {
        secondAdapter secondAdpt = new secondAdapter(context,mList.get(position).getImageUrl());
         holder.PersonRecycle.setHasFixedSize(true);
         holder.PersonRecycle.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false));
-       holder.PersonRecycle.setAdapter(secondAdpt);
+        holder.PersonRecycle.setAdapter(secondAdpt);
     }
 
     @Override

@@ -6,4 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".RetrieveAudioActivity">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/fetchAudioRecycler"
+        android:layout_width="414dp"
+        android:layout_height="731dp"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="-1dp" />
+
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

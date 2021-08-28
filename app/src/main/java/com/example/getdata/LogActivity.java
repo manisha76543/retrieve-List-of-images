@@ -18,7 +18,6 @@ import java.util.ArrayList;
 
 public class LogActivity extends AppCompatActivity {
 
-
     RecyclerView logRecyclerView;
 
     private DatabaseReference root = FirebaseDatabase.getInstance().getReference("logs");
